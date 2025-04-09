@@ -1,9 +1,9 @@
 #ifndef FAQ8_H
 #define FAQ8_H
 
-#define MAX_LENGHT_THEME 98
+#define MAX_LENGHT_THEME 190
 #define MAX_LENGHT_AUTHOR 21
-#define MAX_LENGHT_LAST_EDITOR 7
+#define MAX_LENGHT_LAST_EDITOR 20
 
 typedef struct {
 	char theme[MAX_LENGHT_THEME];
