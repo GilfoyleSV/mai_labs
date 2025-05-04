@@ -142,29 +142,50 @@ void tree_print_indent(tree t, int depth) {
         return;
     }
 
-    // Печатаем отступы
     for (int i = 0; i < depth; i++) {
         printf("  ");
     }
 
-    // Печатаем значение узла
     printf("%.2f\n", t->value);
 
     tree_print_indent(t->left, depth + 1);
     tree_print_indent(t->right, depth + 1);
 }
 
+bool tree_is_linked_list(tree t) {
+    if (tree_is_empty(t)) {
+        return true;
+    }
+    
+    if (!tree_is_empty(t->left) && !tree_is_empty(t->right)) {
+        return false;
+    }
+    
+    bool left_case = tree_is_empty(t->right);
+    bool right_case = tree_is_empty(t->left);
+    
+    if (left_case && right_case) {
+        return true;
+    } else if (left_case) {
+        return tree_is_linked_list(t->left) && tree_is_empty(t->left->right);
+    } else {
+        return tree_is_linked_list(t->right) && tree_is_empty(t->right->left);
+    }
+}
+
 int main(){
     tree my_tree = tree_create_empty();
     my_tree = tree_add(my_tree, 25);
     my_tree = tree_add(my_tree, 14);
-    my_tree = tree_add(my_tree, 35);
-    my_tree = tree_add(my_tree, 16);
-    my_tree = tree_add(my_tree, 33);
-    my_tree = tree_add(my_tree, 345);
-    my_tree = tree_add(my_tree, 23);
-    my_tree = tree_add(my_tree, 1);
+    my_tree = tree_add(my_tree, 12);
+    my_tree = tree_add(my_tree, 13);
+    my_tree = tree_add(my_tree, 26);
+    
 
     tree_print_indent(my_tree, 0);
-    tree_destroy_recursive(my_tree);
+    if (tree_is_linked_list(my_tree)){
+        printf("Tree is linked list\n");
+    } else {
+        printf("Tree isn't linked list\n");
+    }
 }
