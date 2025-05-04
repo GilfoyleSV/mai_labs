@@ -137,89 +137,21 @@ int tree_width(tree t, int width){
     return tree_width(t->left, width - 1) + tree_width(t->right, width - 1);
 }
 
-#define MAX_HEIGHT 1000
-int left_profile[MAX_HEIGHT];
-int right_profile[MAX_HEIGHT];
-
-typedef struct {
-    char** lines;
-    int width;
-    int height;
-} TreeDrawing;
-
-// Создаем пустое изображение
-TreeDrawing* create_drawing(int width, int height) {
-    TreeDrawing* td = malloc(sizeof(TreeDrawing));
-    td->width = width;
-    td->height = height;
-    td->lines = malloc(height * sizeof(char*));
-    for (int i = 0; i < height; i++) {
-        td->lines[i] = malloc(width + 1);
-        memset(td->lines[i], ' ', width);
-        td->lines[i][width] = '\0';
-    }
-    return td;
-}
-
-// Освобождаем память
-void free_drawing(TreeDrawing* td) {
-    for (int i = 0; i < td->height; i++) {
-        free(td->lines[i]);
-    }
-    free(td->lines);
-    free(td);
-}
-
-// Рекурсивная функция для рисования дерева
-void draw_tree_recursive(tree t, TreeDrawing* td, int x, int y) {
-    if (tree_is_empty(t)) return;
-
-    // Записываем значение узла
-    char val[20];
-    sprintf(val, "%.2f", tree_get_value(t));
-    int len = strlen(val);
-    for (int i = 0; i < len; i++) {
-        td->lines[y][x + i] = val[i];
-    }
-
-    // Рисуем связи к детям
-    if (!tree_is_empty(t->left)) {
-        td->lines[y+1][x-1] = '/';
-        draw_tree_recursive(t->left, td, x - 2, y + 2);
-    }
-    if (!tree_is_empty(t->right)) {
-        td->lines[y+1][x+len] = '\\';
-        draw_tree_recursive(t->right, td, x + len + 1, y + 2);
-    }
-}
-
-// Основная функция для печати дерева
-void print_tree(tree t) {
+void tree_print_indent(tree t, int depth) {
     if (tree_is_empty(t)) {
-        printf("(empty tree)\n");
         return;
     }
 
-    int depth = tree_depth(t, 0);
-    int width = 1 << (depth + 1); // Ширина достаточная для дерева
-    
-    TreeDrawing* td = create_drawing(width, depth * 2 + 1);
-    
-    // Начинаем рисовать с корня вверху по центру
-    int start_x = width / 2;
-    draw_tree_recursive(t, td, start_x, 0);
-    
-    // Печатаем результат
-    for (int i = 0; i < td->height; i++) {
-        // Обрезаем лишние пробелы справа
-        int end = td->width - 1;
-        while (end >= 0 && td->lines[i][end] == ' ') end--;
-        td->lines[i][end+1] = '\0';
-        
-        printf("%s\n", td->lines[i]);
+    // Печатаем отступы
+    for (int i = 0; i < depth; i++) {
+        printf("  ");
     }
-    
-    free_drawing(td);
+
+    // Печатаем значение узла
+    printf("%.2f\n", t->value);
+
+    tree_print_indent(t->left, depth + 1);
+    tree_print_indent(t->right, depth + 1);
 }
 
 int main(){
@@ -229,7 +161,10 @@ int main(){
     my_tree = tree_add(my_tree, 35);
     my_tree = tree_add(my_tree, 16);
     my_tree = tree_add(my_tree, 33);
+    my_tree = tree_add(my_tree, 345);
+    my_tree = tree_add(my_tree, 23);
+    my_tree = tree_add(my_tree, 1);
 
-    print_tree(my_tree);
+    tree_print_indent(my_tree, 0);
     tree_destroy_recursive(my_tree);
 }
