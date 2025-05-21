@@ -175,17 +175,50 @@ bool tree_is_linked_list(tree t) {
 
 int main(){
     tree my_tree = tree_create_empty();
-    my_tree = tree_add(my_tree, 25);
-    my_tree = tree_add(my_tree, 14);
-    my_tree = tree_add(my_tree, 12);
-    my_tree = tree_add(my_tree, 13);
-    my_tree = tree_add(my_tree, 26);
-    
-
-    tree_print_indent(my_tree, 0);
-    if (tree_is_linked_list(my_tree)){
-        printf("Tree is linked list\n");
-    } else {
-        printf("Tree isn't linked list\n");
+    while (1){
+        printf("Enter the command number you want to execute:\n");
+        printf("1. Add element to the tree\n");
+        printf("2. Print the tree\n");
+        printf("3. Delete a node\n");
+        printf("4. Check if the tree is a linked list\n");
+        printf("5. Exit\n");
+        int comm_n;
+        float x;
+        if (scanf("%d", &comm_n) != 1 || comm_n >= 6 || comm_n <= 0){
+            printf("You entered an invalid value\n");
+            while (getchar() != '\n');
+            continue;
+        } else if (comm_n == 1){
+            printf("Enter the number you want to add:\n");
+            if (scanf("%f", &x) == 1){
+                my_tree = tree_add(my_tree, x);
+            } else {
+                printf("You entered an invalid value\n");
+            }
+        } else if (comm_n == 2){
+            if (tree_is_empty(my_tree)){
+                printf("The tree is empty\n");
+            } else {
+                tree_print_indent(my_tree, 0);
+            }
+        } else if (comm_n == 3){
+            if (tree_is_empty(my_tree)){
+                printf("The tree is empty");
+            } else {
+                printf("Enter the number you want to delete:");
+                if (scanf("%f", &x) == 1){
+                    my_tree = tree_remove_node(my_tree, x);
+                }
+            }
+        } else if (comm_n == 4){
+            if (tree_is_linked_list(my_tree)){
+                printf("The tree is a linked list\n");
+            } else {
+                printf("The tree is not a linked list\n");
+            }
+        } else if (comm_n == 5){
+            break;
+        }
     }
+    tree_destroy_recursive(my_tree);
 }
